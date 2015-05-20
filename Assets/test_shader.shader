@@ -14,6 +14,7 @@ Shader "Custom/test_shader" {
 	// シェーダ本体を記述
 	SubShader {
 		Pass {
+			// Cgで記述
 			CGPROGRAM
 			// vertexシェーダ用関数
 			#pragma vertex vert
