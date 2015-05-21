@@ -1,4 +1,4 @@
-﻿Shader "Custom/test_shader2" {
+﻿Shader "Custom/mouse_position" {
   Properties {
     _MainTex ("Texture", 2D) = "white" {}
   }
