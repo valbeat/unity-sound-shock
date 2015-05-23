@@ -1,26 +1,44 @@
 ﻿Shader "Custom/shock_wave" {
 	Properties {
-		_MainTex ("Base (RGB)", 2D) = "white" {}
 	}
 	SubShader {
-		Tags { "RenderType"="Opaque" }
-		LOD 200
-		
-		CGPROGRAM
-		#pragma surface surf Lambert
+		Pass {
+			// GLSLシェーダ
+			GLSLPROGRAM
 
-		sampler2D _MainTex;
+			#ifdef VERTEX
+			void main()
+			{
+				//頂点の設定
+				// gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
+				gl_Position = ftransform();
+				gl_TexCoord[0] = gl_MultiTexCoord0;
+			}
+			#endif
 
-		struct Input {
-			float2 uv_MainTex;
-		};
+			#ifdef FRAGMENT
+			uniform sampler2D sceneTex;
+			uniform vec2 center;
+			uniform float time;
+			uniform vec3 shockParams;
+			void main()
+			{
+				vec2 uv = gl_TexCoord[0].xy;
+				vec2 texCoord = uv;
+				float distance = distance(uv, center);
+				if ((distance <= (time + shockParams.z)) && (distance >= (time - shockParams.z))) {
+					float diff = (distance - time);
+					float powDiff = 1.0 - pow(abs(diff * shockParams.x), shockParams.y);
+					float diffTime = diff * powDiff;
+					vec2 diffUV = normalize(uv - center);
+					texCoord = uv + (diffUV * diffTime);
+				}
+				gl_FlagColor = texture2D(sceneTex, texCoord);
+			}
+			#endif
 
-		void surf (Input IN, inout SurfaceOutput o) {
-			half4 c = tex2D (_MainTex, IN.uv_MainTex);
-			o.Albedo = c.rgb;
-			o.Alpha = c.a;
+			ENDGLSL
 		}
-		ENDCG
-	} 
-	FallBack "Diffuse"
+	}
 }
+
