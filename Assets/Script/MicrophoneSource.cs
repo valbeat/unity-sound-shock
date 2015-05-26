@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-// 空のAudio Sourceを作成
+// 空のAudio Sourceをアタッチ
 [RequireComponent (typeof (AudioSource))]
 public class MicrophoneSource : MonoBehaviour {
   // 現在の音量を読み取る
@@ -18,12 +18,16 @@ public class MicrophoneSource : MonoBehaviour {
   [Range(0,0.95f)]
   public float lastLoudnessInfluence;
 
+  Material mat;
+
 	// Use this for initialization
 	void Start () {
+    // マテリアルの作成
+    mat = GetComponent<Renderer>().material;
     // 空のAudio Sourceを取得
     var audio = GetComponent<AudioSource>();
     // Audio Source の Audio Clipをマイク入力に設定
-    audio.clip = Microphone.Start(null, false, 10, 44100);
+    audio.clip = Microphone.Start(null, true, 10, 44100);
 
     audio.loop = true;
     audio.mute = true;
@@ -42,6 +46,9 @@ public class MicrophoneSource : MonoBehaviour {
   void CalcLoudness() {
     lastLoudness = loudness;
     loudness = GetAveragedVolume() * sensitivity * (1 - lastLoudnessInfluence ) + lastLoudness * lastLoudnessInfluence;
+
+    // ボリューム
+    mat.SetFloat("_Loudness", loudness);
   }
   // 現フレームのAudioClipから平均的な音量を取得
   float GetAveragedVolume() {
