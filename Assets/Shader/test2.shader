@@ -18,13 +18,13 @@
 			float4 color : COLOR;
 		};
 		// Propertiesで指定した値を取得
-		float _WaveNum, _WaveScale, _Opacity, _Loudness;
+		float _WaveNum, _WaveScale, _Opacity, _Loudness,
+		      _LowSpectrum, _MidSpectrum, _HighSpectrum;
 		float4 _Color;
+
 		//
 		void surf (Input IN, inout SurfaceOutput o) {
-			// 反射の割合 青と緑は半分反射
-			o.Albedo = _Color.rgb;
-			o.Albedo = float4((_SinTime.x+1.0) * 2, (_SinTime.y+1.0) * 2, (_SinTime.z) * 2, 0.1);
+			o.Albedo = float4(_LowSpectrum, _MidSpectrum, _HighSpectrum, 0.1);
 			// 半透明
 			o.Alpha = _Opacity;
 		}
