@@ -1,4 +1,4 @@
-﻿Shader "Custom/test2" {
+﻿Shader "Custom/soundshock" {
 	Properties {
 		// インスペクタに表示される
 		_WaveNum ("WaveNum", Range (0.0, 100)) = 10
